@@ -69,61 +69,88 @@ class MainApp(tk.Tk):
         self.btn_help.grid(row=2, column=1)
 
     def browse_file(self):
+        # browsing function to select and upload file
+        # allow only .xlsx file as we are working with openpyxl
         filepath = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx")])
         if filepath:
+            # if file was provided set the file path and verify if the file match the template
             self.excel_file_path.set(filepath)
             if self.verify_excel_template():
+                # if the file is valid, display file name and icon
                 self.lbl_file_uploaded.config(text=filepath.split('/')[-1], image=self.icon_image, compound='left')
                 self.lbl_yb_channel_count.config(text=f'{self.channel_number - self.processed_channel} channels')
+                # activate the process button
                 self.btn_process.config(state=tk.NORMAL)
             else:
+                # It's only useful when a first valid file is uploaded and a second invalid file is uploaded
+                # Reset the label text and image
                 self.lbl_file_uploaded.config(text="No file uploaded", image="")
+                # Reset channel counter
                 self.lbl_yb_channel_count.config(text="")
+                # Rest process button
                 self.btn_process.config(state=tk.DISABLED)
 
     def help_window(self):
+        # function to call the help window and show the instruction how to get token
         return HelpWindow(master=self)
 
     def process_channels(self):
-        self.is_valid_youtube_token()
+        # used when process channel button is triggerd
+        self.is_valid_youtube_token()  # initiate verification of api toke
 
+        # display error message box if token is invalid or empty
         if self.api_key == "invalid":
             messagebox.showinfo(title="Message Box", message="Token invalid", icon='error')
         elif self.api_key == "empty":
             messagebox.showinfo(title="Message Box", message="Token empty", icon='error')
         else:
+            # when token is valid, disable token entry and upload button to avoid any changes during process
             self.api_entry.config(state=tk.DISABLED)
             self.btn_upload.config(state=tk.DISABLED)
+            # display the charging bar use to show progress
             self.charging_bar.show_bar()
+            # alter process channel button to have Stop & Save feature
             self.btn_process.config(text="Stop & Save", command=self.stop_and_save)
+            # start processing channels
             self.youtube_checker()
 
     def stop_and_save(self):
+        # function to change state of the attribute stop_and_save_state in order to exit the processing channel loop
         self.stop_and_save_state = True
 
     def is_valid_youtube_token(self):
         if self.api_entry.get():
+            # if there is text in api entry
             try:
+                # try to send request to api with token provided
                 youtube = build('youtube', 'v3', developerKey=self.api_entry.get())
                 youtube.videos().list(part='id', id='VIDEO_ID').execute()
+                # set api key to valid if the request is successful
                 self.api_key = "valid"
 
             except HttpError:
+                # if it catches an error the token is not valid
                 self.api_key = "invalid"
 
     def verify_excel_template(self):
+        # used to verify if the file uploaded is matching the template and count channels to process in the file
+        # load the file
         self.workbook = openpyxl.load_workbook(self.excel_file_path.get())
 
+        # reset attributes for the case when user change the uploaded file
         self.channel_number = 0
         self.processed_channel = 0
 
-        # verify header
+        # if a result tab is present, verify header
         if ["Data", "Results"] == self.workbook.sheetnames and ["Placement", "Placement URL", "madeForKids", "Description"] == [cell.value for cell in self.workbook["Results"][1]]:
+            # get the number of processed channels
             self.processed_channel = sum(1 for row in self.workbook["Results"].iter_rows(min_row=2, values_only=True) if any(row))
-
+        # if data tab is present, verify header
         if "Data" in self.workbook.sheetnames and ["Placement", "Placement URL"] == [cell.value for cell in self.workbook["Data"][1]]:
+            # get the number of channel in the data tab
             self.channel_number = sum(1 for row in self.workbook["Data"].iter_rows(min_row=2, values_only=True) if any(row))
 
+            # return False and display error message box when template is matching but no data to process
             if not self.channel_number:
                 messagebox.showinfo(title="Message Box", message="Empty file", icon='error')
                 return False
@@ -134,11 +161,14 @@ class MainApp(tk.Tk):
             return True
 
         else:
+            # return False and display error message box when template invalid
             messagebox.showinfo(title="Message Box", message="Template file incorrect", icon='error')
             return False
 
     def youtube_checker(self):
+        # main function to process the channels in the file uploaded
         def calculation_process_time(start_time, current_iter, max_iter):
+            # calculate an estimation of the time left to process all channels with basic math
             t_elapsed = time.time() - start_time
             t_estimated = (t_elapsed / current_iter) * max_iter
             time_left = t_estimated - t_elapsed
@@ -155,6 +185,7 @@ class MainApp(tk.Tk):
                 return f'{round(time_left)} seconds left'
 
         def get_youtube_api_service(api_key):
+            # set the header of api request with correct service, version and user token
             api_service_name = "youtube"
             api_version = "v3"
             return build(api_service_name, api_version, developerKey=api_key)
@@ -179,6 +210,7 @@ class MainApp(tk.Tk):
                 return channel_url, 'No data', 'No data'
 
         def get_processed_channels(result_worksheet):
+            # function to collect all channels URL already processed from Result tab in set
             processed_channels = set()
 
             for row in result_worksheet.iter_rows(min_row=2, max_col=2, values_only=True):
@@ -224,38 +256,49 @@ class MainApp(tk.Tk):
                     # get the properties of channel and append to result worksheet
                     col2, col3, col4 = get_channel_properties(youtube_api_service, channel_url)
                     result_sheet.append([channel_name, col2, col3, col4])
+                    # add channel url to processed channels
                     processed_channels.add(channel_url)
                     print(f"processing {channel_name} - {channel_url}")
 
                 except Exception as e:
                     # Handle quota exceeded error
                     if "quotaExceeded" in str(e):
-                        print("Quota exceeded. Saving collected data and exiting the script...")
+                        messagebox.showinfo(title="Message Box", message="Quota exceeded: Result saved in your file", icon='info')
                         break  # Exit the loop
 
+                    # append channel data to result worksheet with error if exception raised
                     result_sheet.append([channel_name, channel_url, "error", "error"])
+                    # add channel url to processed channels
                     processed_channels.add(channel_url)
                     print(f"Error processing {channel_name} - {channel_url}: {str(e)}")
             else:
                 print(f"Already processed {channel_name} - {channel_url}")
 
             if self.stop_and_save_state:
+                # check state of attribute, if user click the button, exit the loop
                 break
 
+            # update the time left and display it
             process_time = calculation_process_time(start, current_iteration, max_iteration)
             self.lbl_yb_channel_count.config(text=f"{process_time}")
-
+            # update the charging bar and rest it for next iteration
             self.charging_bar.update()
             self.charging_bar["value"] = 0
 
+        # end of for loop
+        # load charging bar to max and hide it
         self.charging_bar["value"] = self.channel_number
         self.charging_bar.hide_bar()
-        self.lbl_yb_channel_count.config(text="")
+        # save collected data in file
         self.workbook.save(self.excel_file_path.get())
-        self.end_process()
+        # display with message box process done
         messagebox.showinfo(title="Message Box", message="Process done: Result saved in your file", icon='info')
+        # reset app for new process
+        self.end_process()
 
     def end_process(self):
+        # reset attribute and interface for potential new process cycle
+        self.lbl_yb_channel_count.config(text="")
         self.btn_process.config(text=f"Process channels", command=self.process_channels, state=tk.DISABLED)
         self.channel_number = 0
         self.processed_channel = 0
