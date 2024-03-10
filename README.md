@@ -32,31 +32,31 @@ python3 main.py
 **The application is made of two tabs.**  
 * The first tab is where you will upload the Excel file with the YouTube channels you want to check.
 Please note that you need to use the template available 
-[here](/Users/v.mereau/workspace/YouTube-MadeForKid-Checker/template_excel_file.xlsx) 
+[here](/template_excel_file.xlsx) 
 for formatting purposes. Only `.xlsx` format can be uploaded on the application.
 
-<img height="50%" src="/Users/v.mereau/workspace/YouTube-MadeForKid-Checker/image/Screenshot_1.jpg" width="50%"/>
+<img height="50%" src="https://github.com/seexmax/YouTube-MadeForKid-Checker/assets/96994915/a41f0f31-cdec-4543-9aa9-8f59bb8db0e6" width="50%"/>
 
 * On the second tab you need to enter your YouTube API token. If you don't know to get one you can click on `How to get a token ?`.
 Instructions to get a token will be shown. Note that a token is limited to 10.000 requests per day. If you would like
 to process more than 10.000 channels you will need to use multiple API token or wait the next day.
 
-<img height="50%" src="/Users/v.mereau/workspace/YouTube-MadeForKid-Checker/image/Screenshot_2.jpg" width="50%"/>
+<img height="50%" src="https://github.com/seexmax/YouTube-MadeForKid-Checker/assets/96994915/ccb62a79-a602-4768-86ee-c854e1875447" width="50%"/>
 
 Once you enter a valid token and upload an Excel file matching the template, the application will show you
 how many channels are in your file. Note that the button `Process channels` is now clickable to start the process.
 
-<img height="50%" src="/Users/v.mereau/workspace/YouTube-MadeForKid-Checker/image/Screenshot_3.jpg" width="50%"/>
+<img height="50%" src="https://github.com/seexmax/YouTube-MadeForKid-Checker/assets/96994915/595494ff-8921-4363-bddd-a652677f4259" width="50%"/>
 
 As the application processes the channels, the time left will be displayed. At anytime during the process you can click 
 on `Stop & Save`, it will interrupt the process and save the data collected in your file.
 
-<img height="50%" src="/Users/v.mereau/workspace/YouTube-MadeForKid-Checker/image/Screenshot_4.jpg" width="50%"/>
+<img height="50%" src="https://github.com/seexmax/YouTube-MadeForKid-Checker/assets/96994915/f521aeda-de50-478d-ab76-fb8a68353148" width="50%"/>
 
 When the application is done, or you used `Stop & Save`, the data collected will be saved in your file on a new tab named
 `Results`.
 
-<img height="50%" src="/Users/v.mereau/workspace/YouTube-MadeForKid-Checker/image/Screenshot_5.jpg" width="50%"/>
+<img height="50%" src="https://github.com/seexmax/YouTube-MadeForKid-Checker/assets/96994915/9acf09cf-28f4-4f55-8d8f-e2181de8e360" width="50%"/>
 
 If you didn't process all the channels of your file because you reached the quota limitation of your token, or you used
 `Stop & Save`, you can always upload again your file to process the remaining channels. The application will automatically
@@ -64,9 +64,10 @@ detect your `Results` tab and start from where you left.
 _You can see from the example of the demo that the channels to process went from 9.750 to 9.096 when I upload the file 
 again._
 
-<img height="50%" src="/Users/v.mereau/workspace/YouTube-MadeForKid-Checker/image/Screenshot_6.jpg" width="50%"/>
+<img height="50%" src="https://github.com/seexmax/YouTube-MadeForKid-Checker/assets/96994915/04bf958c-5773-4962-b917-6f65db9b7480" width="50%"/>
 
 
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
+
