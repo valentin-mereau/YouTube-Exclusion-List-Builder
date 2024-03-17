@@ -1,5 +1,5 @@
 
-# YouTube Made For Kid Checker
+# YouTube Made For Kids Checker
 
 This project aim to help digital marketing professional to improve their Google Ads placements on YouTube campaign. 
 It's always frustrating to see part of campaign budget going to videos with kid content. 
@@ -10,25 +10,29 @@ This graphic user interface will help you to build along your campaign custom Yo
 
 ## Installation
 
-**Install YouTube MadeForKid Checker with executable file.**
+**Install YouTube MadeForKids Checker with executable file.**
 
-You can download the application here [YouTube-MadeForKid-Checker.v1.0.zip
+You can download the application here [YouTube-MadeForKids-Checker.v1.0.zip
 ](https://github.com/seexmax/YouTube-MadeForKid-Checker/releases/tag/v1.0.0) 
 for MacOS.
 
 
-**Install YouTube MadeForKid Checker with command line.**
+**Install YouTube MadeForKids Checker with command line.**
 
 This project requires python 3.10 you can download it [here](https://www.python.org/downloads/release/python-3100/).
 
 ```bash
 git clone https://github.com/seexmax/YouTube-MadeForKid-Checker.git
 ```
-Open the project directory with `cd` and install the requirements.
+Open the project directory with `cd` and install the requirements. 
 ```bash
 pip install -r requirements.txt
 ```
-In the project directory run `main.py` file to execute the application
+On Ubuntu and other Debian-based Linux distributions you will also need to install tkinter.
+```bash
+sudo apt install python3-tk
+```
+In the project directory run `main.py` file to execute the application.
 ```bash
 python3 main.py
 ```

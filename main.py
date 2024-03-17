@@ -8,7 +8,52 @@ from googleapiclient.errors import HttpError
 
 
 class MainApp(tk.Tk):
+    """The MainApp class is the core of the application with all the layout set and the logic under its feature.
+
+    The class inherits from tinker.TK which construct a toplevel Tk widget.
+
+    Attributes
+    ----------
+    title : tkinter.Wm
+        the title of the application displayed at the top of the window
+    resizable : tkinter.Wm
+        control the possibility to resize the app window on the x and y axes
+    excel_file_path : tkinter.StringVar()
+        contain the path of the uploaded file
+    icon_image : tkinter.PhotoImage
+        excel icon stored in base 64 displayed next to the file name
+    api_key : str
+        define the validity of the user's token
+    channel_number : int
+        count the number of channel to process on the uploaded file
+    processed_channel : int
+        count the channels already processed
+    workbook : openpyxl.reader.excel
+        loaded Excel file
+    stop_and_save_state : bool
+        indicate when the button 'Stop & Save' is used
+
+    Methods
+    -------
+    browse_file()
+        ask user to upload file and update interface
+    help_window()
+        display help instructions
+    process_channels()
+        start the process to check channels and update interface
+    stop_and_save()
+        stop process from user action
+    is_valid_youtube_token()
+        check if user's token is valid
+    verify_excel_template()
+        verifies if uploaded file is conform to template
+    youtube_checker()
+        processes channels
+    end_process()
+        reset the app
+    """
     def __init__(self):
+        """Inits MainApp with all the attributes necessary to the logic of the applcation and the gui layout"""
         super().__init__()
 
         self.title("YouTube Made For Kid Checker")
@@ -69,8 +114,13 @@ class MainApp(tk.Tk):
         self.btn_help.grid(row=2, column=1)
 
     def browse_file(self):
-        # browsing function to select and upload file
-        # allow only .xlsx file as we are working with openpyxl
+        """The browsing function will prompt the user to select and upload file.
+
+        The file uploaded will be set to an attribute and verified by external function.
+        If the file is valid, it will be displayed on the interface and the user will have the possibility to process it.
+
+        Only .xlsx file are allow as we are working with openpyxl.
+        """
         filepath = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx")])
         if filepath:
             # if file was provided set the file path and verify if the file match the template
@@ -91,11 +141,17 @@ class MainApp(tk.Tk):
                 self.btn_process.config(state=tk.DISABLED)
 
     def help_window(self):
-        # function to call the help window and show the instruction how to get token
+        """This function will call an instance of the HelpWindow class and show the instruction how to get a token."""
         return HelpWindow(master=self)
 
     def process_channels(self):
-        # used when process channel button is triggerd
+        """Logic structure used when 'process channel' button is triggerd.
+        The token validity will be first verified.
+        If the token is valid:
+            The upload button and the api entry will be disabled to avoid any conflicting changes during the process.
+            The charging bar and the save&quit feature will be shown.
+            The function to process the channels will start.
+        """
         self.is_valid_youtube_token()  # initiate verification of api toke
 
         # display error message box if token is invalid or empty
@@ -115,10 +171,11 @@ class MainApp(tk.Tk):
             self.youtube_checker()
 
     def stop_and_save(self):
-        # function to change state of the attribute stop_and_save_state in order to exit the processing channel loop
+        """Change the state of the attribute stop_and_save_state in order to exit the processing channel loop."""
         self.stop_and_save_state = True
 
     def is_valid_youtube_token(self):
+        """Verify the validity of the token by sending a request to the Google api under a try statement."""
         if self.api_entry.get():
             # if there is text in api entry
             try:
@@ -133,7 +190,7 @@ class MainApp(tk.Tk):
                 self.api_key = "invalid"
 
     def verify_excel_template(self):
-        # used to verify if the file uploaded is matching the template and count channels to process in the file
+        """Verifies if the file uploaded is matching the template and count channels to process inside the file"""
         # load the file
         self.workbook = openpyxl.load_workbook(self.excel_file_path.get())
 
@@ -166,9 +223,9 @@ class MainApp(tk.Tk):
             return False
 
     def youtube_checker(self):
-        # main function to process the channels in the file uploaded
+        """Main function to process the channels in the uploaded file"""
         def calculation_process_time(start_time, current_iter, max_iter):
-            # calculate an estimation of the time left to process all channels with basic math
+            """Calculates an estimation of the time left to process all channels with basic math"""
             t_elapsed = time.time() - start_time
             t_estimated = (t_elapsed / current_iter) * max_iter
             time_left = t_estimated - t_elapsed
@@ -185,13 +242,13 @@ class MainApp(tk.Tk):
                 return f'{round(time_left)} seconds left'
 
         def get_youtube_api_service(api_key):
-            # set the header of api request with correct service, version and user token
+            """Sets the header of api request with correct service, version and user token"""
             api_service_name = "youtube"
             api_version = "v3"
             return build(api_service_name, api_version, developerKey=api_key)
 
         def get_channel_properties(api_service, channel_url):
-            # Get channel properties
+            """Gets channel properties"""
             request = api_service.channels().list(
                 part="status,brandingSettings",
                 id=channel_url.split('/')[-1]
@@ -210,7 +267,7 @@ class MainApp(tk.Tk):
                 return channel_url, 'No data', 'No data'
 
         def get_processed_channels(result_worksheet):
-            # function to collect all channels URL already processed from Result tab in set
+            """Collects all channels URL already processed from Result tab in set"""
             processed_channels = set()
 
             for row in result_worksheet.iter_rows(min_row=2, max_col=2, values_only=True):
@@ -297,7 +354,7 @@ class MainApp(tk.Tk):
         self.end_process()
 
     def end_process(self):
-        # reset attribute and interface for potential new process cycle
+        """reset attribute and interface for potential new process cycle"""
         self.lbl_yb_channel_count.config(text="")
         self.btn_process.config(text=f"Process channels", command=self.process_channels, state=tk.DISABLED)
         self.channel_number = 0
@@ -310,7 +367,28 @@ class MainApp(tk.Tk):
 
 
 class Container(ttk.Frame):
+    """Layout formatter
+
+    To organize the widgets over the interface and have consistent layout it's recommended to use frame.
+    Widgets are placed in frames with similar settings.
+    Having standard frame with this class help to reduce line of code and improve readability
+
+    Typical use:
+        widget_container = Container(self.master, column_number, row_number, uniform_type)
+    """
     def __init__(self, master, column_number, row_number, uniform_type=None):
+        """
+        Parameters
+        ----------
+        master :  Optional[Misc]
+            parent of the container
+        column_number : Any
+            number of column of the container
+        row_number : Any
+            number of row of the container
+        uniform_type : str
+            if non-empty, empty row and column will have the same size as others
+        """
         super().__init__(master)
         self.pack(fill=tk.BOTH, expand=True)
         self.columnconfigure(column_number, weight=1, uniform=uniform_type)
@@ -318,7 +396,14 @@ class Container(ttk.Frame):
 
 
 class HelpWindow(tk.Toplevel):
+    """Popup window to show help instructions"""
     def __init__(self, master):
+        """
+        Parameters
+        ----------
+        master :  Optional[Misc]
+            parent of the help window
+        """
         super().__init__(master)
         self.title("How to get a token ?")
         self.resizable(False, False)
@@ -327,23 +412,36 @@ class HelpWindow(tk.Toplevel):
 
 
 class TextWidget(tk.Text):
+    """Separated class for code readability that contain the content of the HelpWindow
+
+    Methods
+    -------
+    insert_text(text, tag=None)
+        insert text with style in the text box
+    """
     def __init__(self, master):
+        """
+        Parameters
+        ----------
+        master :  Optional[Misc]
+            parent of the help text widget
+        """
         super().__init__(master, wrap="none", width=95, height=20, highlightthickness=0)
         self.pack(fill=tk.BOTH, expand=True)
         self.tag_configure("bold", font=(None, 12, "bold"))
         self.tag_configure("bullet", font=(None, 10), lmargin1=20, lmargin2=40)
         self.tag_configure("large", font=(None, 14, "bold"))
 
-        # Insert tutorial content
+        # Inserted instruction content
         self.insert_text("How to Obtain API Token for YouTube Data API v3\n\n", "large")
         self.insert_text("1. Create a Project on Google Cloud Console\n", "bold")
-        self.insert_text("   - Go to the Google Cloud Console: [Google Cloud Console](https://console.cloud.google.com/)\n")
+        self.insert_text("   - Go to the Google Cloud Console: https://console.cloud.google.com\n")
         self.insert_text("   - Click on the project dropdown at the top of the page and create a new project.\n")
         self.insert_text("   - Give your project a name and click 'Create.'\n\n")
 
         self.insert_text("2. Enable YouTube Data API v3\n", "bold")
-        self.insert_text("   - In the Google Cloud Console, navigate to 'APIs & Services' > 'Dashboard.'\n")
-        self.insert_text("   - Click on the '+ ENABLE APIS AND SERVICES' button.\n")
+        self.insert_text("   - In the Google Cloud Console, use the navigation menu at the top right of the page\n")
+        self.insert_text("   - Navigate to to 'APIs & Services' and click on 'Library'.\n")
         self.insert_text("   - Search for 'YouTube Data API v3' and select it.\n")
         self.insert_text("   - Click the 'Enable' button.\n\n")
 
@@ -355,17 +453,43 @@ class TextWidget(tk.Text):
         self.config(state=tk.DISABLED)
 
     def insert_text(self, text, tag=None):
+        """Insert text with style in the text box
+
+        Parameters
+        ----------
+        text :  str
+            text to insert in the widget
+        tag : str
+            style to apply on the text
+        """
         self.insert(tk.END, text, tag)
 
 
 class ChargingBar(ttk.Progressbar):
+    """Manages the presence of the progress bar on the interface
+
+    Methods
+    -------
+    show_bar()
+        display the progress bar
+    hide_bar()
+        hide the progress bar
+    """
     def __init__(self, master):
+        """
+        Parameters
+        ----------
+        master :  Optional[Misc]
+            parent of the help text widget
+        """
         super().__init__(master)
 
     def show_bar(self):
+        """Show the progress bar on the app interface"""
         self.grid(row=2, column=0, sticky="nswe", padx=20, columnspan=3)
 
     def hide_bar(self):
+        """Hide the progress bar from the app interface"""
         self.grid_forget()
 
 
