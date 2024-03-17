@@ -13,7 +13,7 @@ This graphic user interface will help you to build along your campaign custom Yo
 **Install YouTube MadeForKids Checker with executable file.**
 
 You can download the application here [YouTube-MadeForKids-Checker.v1.0.zip
-](https://github.com/seexmax/YouTube-MadeForKid-Checker/releases/tag/v1.0.0) 
+](https://github.com/seexmax/YouTube-MadeForKids-Checker/releases/tag/v1.0.0) 
 for MacOS.
 
 
@@ -22,7 +22,7 @@ for MacOS.
 This project requires python 3.10 you can download it [here](https://www.python.org/downloads/release/python-3100/).
 
 ```bash
-git clone https://github.com/seexmax/YouTube-MadeForKid-Checker.git
+git clone https://github.com/seexmax/YouTube-MadeForKids-Checker.git
 ```
 Open the project directory with `cd` and install the requirements. 
 ```bash
