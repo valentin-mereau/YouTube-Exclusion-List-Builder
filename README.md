@@ -10,14 +10,14 @@ This graphic user interface will help you to build along your campaign custom Yo
 
 ## Installation
 
-**Install YouTube MadeForKids Checker with executable file.**
+**1<sup>st</sup> option - Install YouTube MadeForKids Checker with executable file.**
 
 You can download the application here [YouTube-MadeForKids-Checker.v1.0.zip
 ](https://github.com/seexmax/YouTube-MadeForKids-Checker/releases/tag/v1.0.0) 
-for MacOS.
+for macOS or Windows.
 
 
-**Install YouTube MadeForKids Checker with command line.**
+**2<sup>nd</sup> option - Install YouTube MadeForKids Checker with command line.**
 
 This project requires python 3.10 you can download it [here](https://www.python.org/downloads/release/python-3100/).
 
