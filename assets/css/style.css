@@ -545,7 +545,7 @@ Full-Width Styles
   height:70px;
   text-indent: -5000px;
   overflow: hidden;
-  background: url({{ site.github.repository_name }}/assets/images/os_download.png) no-repeat bottom left;
+  background: url({{ site.baseurl }}/{{ site.github.repository_name }}/assets/images/os_download.png) no-repeat bottom left;
 }
 
 .mac_download_link {
@@ -555,16 +555,16 @@ Full-Width Styles
   height:70px;
   text-indent: -5000px;
   overflow: hidden;
-  background: url({{ site.github.repository_name }}/assets/images/os_download.png) no-repeat bottom right;
+  background: url({{ site.baseurl }}/{{ site.github.repository_name }}/assets/images/os_download.png) no-repeat bottom right;
   margin-left: 10px;
 }
 
 .win_download_link:hover {
-  background: url({{ site.github.repository_name }}/assets/images/os_download.png) no-repeat top left;
+  background: url({{ site.baseurl }}/{{ site.github.repository_name }}/assets/images/os_download.png) no-repeat top left;
 }
 
 .mac_download_link:hover {
-  background: url({{ site.github.repository_name }}/assets/images/os_download.png) no-repeat top right;
+  background: url({{ site.baseurl }}/{{ site.github.repository_name }}/assets/images/os_download.png) no-repeat top right;
 }
 
 #main_content_wrap {
