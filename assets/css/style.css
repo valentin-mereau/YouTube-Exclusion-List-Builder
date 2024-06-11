@@ -2,7 +2,6 @@
 ---
 
 @import "{{ site.theme }}";
-
 .win_download_link {
   display: block;
   float: right;
