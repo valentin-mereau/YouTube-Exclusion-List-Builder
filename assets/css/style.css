@@ -3,7 +3,7 @@
 
 @import "jekyll-theme-slate";
 
-.zip_download_link {
+.win_download_link {
   display: block;
   float: right;
   width: 90px;
@@ -13,7 +13,7 @@
   background: url(../images/os_download.png) no-repeat bottom left;
 }
 
-.tar_download_link {
+.mac_download_link {
   display: block;
   float: right;
   width: 90px;
@@ -24,10 +24,10 @@
   margin-left: 10px;
 }
 
-.zip_download_link:hover {
+.win_download_link:hover {
   background: url(../images/os_download.png) no-repeat top left;
 }
 
-.tar_download_link:hover {
+.mac_download_link:hover {
   background: url(../images/os_download.png) no-repeat top right;
 }
