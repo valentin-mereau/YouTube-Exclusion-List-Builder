@@ -75,6 +75,19 @@ again._
 
 <img height="50%" src="https://github.com/seexmax/YouTube-MadeForKid-Checker/assets/96994915/04bf958c-5773-4962-b917-6f65db9b7480" width="50%"/>
 
+**The results in your Excel file.**  
+
+When the process is complete your data will be saved in the `Results` tab. You will see two new columns, `madeForKids` which 
+indicates if the channel is made for kids or not and `Description` which contains the description of the channel. You can now filter 
+with 'TRUE' and build your exclusion list.
+
+The`Description` column is also useful when 'No data' appears in `madeForKids`. You can use the _Find & Replace_ Excel tool 
+to search for keywords such as 'kids' or 'fairytale' and add the matching channels to your list.
+
+## Upcoming updates
+
+* Additional filtering options such as language.
+* Moving the application to a more general exclusion list builder
 
 ## License
 
