@@ -89,7 +89,7 @@ to search for keywords such as 'kids' or 'fairytale' and add the matching channe
 ## Upcoming updates
 
 * Additional filtering options such as language.
-* Moving the application to a more general exclusion list builder
+* Moving the application to a more general exclusion list builder.
 
 ## License
 
