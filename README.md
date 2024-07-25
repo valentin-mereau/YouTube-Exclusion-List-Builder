@@ -14,7 +14,10 @@ This graphic user interface will help you to build along your campaign custom Yo
 
 You can download the application here [YouTube-MadeForKids-Checker.v1.0.zip
 ](https://github.com/seexmax/YouTube-MadeForKids-Checker/releases/tag/v1.0.0) 
-for macOS or Windows.
+for macOS or Windows. On Mac, you will most probably face an error message while executing the file like 
+" “YouTube-MadeForKids-Checker.v1.0 2” can’t be opened because Apple cannot check it for malicious software.". 
+To avoid this, go in the System Preferences > Security and Privacy and you should see a section where it says 
+that the app was blocked from use. Click on open anyway. Wait a minute and you should see the app open.
 
 
 **2<sup>nd</sup> option - Install YouTube MadeForKids Checker with command line.**
