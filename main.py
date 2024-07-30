@@ -5,6 +5,7 @@ import tkinter as tk
 from tkinter import ttk, filedialog, PhotoImage, messagebox
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from lingua import LanguageDetectorBuilder
 
 
 class MainApp(tk.Tk):
@@ -249,8 +250,31 @@ class MainApp(tk.Tk):
 
         def get_channel_properties(api_service, channel_url):
             """Gets channel properties"""
+            topic_id = {"/m/04rlf": "Music (parent topic)", "/m/02mscn": "Christian music",
+                        "/m/0ggq0m": "Classical music", "/m/01lyv": "Country", "/m/02lkt": "Electronic music",
+                        "/m/0glt670": "Hip hop music", "/m/05rwpb": "Independent music", "/m/03_d0": "Jazz",
+                        "/m/028sqc": "Music of Asia", "/m/0g293": "Music of Latin America", "/m/064t9": "Pop music",
+                        "/m/06cqb": "Reggae", "/m/06j6l": "Rhythm and blues", "/m/06by7": "Rock music",
+                        "/m/0gywn": "Soul music", "/m/0bzvm2": "Gaming (parent topic)", "/m/025zzc": "Action game",
+                        "/m/02ntfj": "Action-adventure game", "/m/0b1vjn": "Casual game",
+                        "/m/02hygl": "Music video game", "/m/04q1x3q": "Puzzle video game",
+                        "/m/01sjng": "Racing video game", "/m/0403l3g": "Role-playing video game",
+                        "/m/021bp2": "Simulation video game", "/m/022dc6": "Sports game",
+                        "/m/03hf_rm": "Strategy video game", "/m/06ntj": "Sports (parent topic)",
+                        "/m/0jm_": "American football", "/m/018jz": "Baseball", "/m/018w8": "Basketball",
+                        "/m/01cgz": "Boxing", "/m/09xp_": "Cricket", "/m/02vx4": "Football", "/m/037hz": "Golf",
+                        "/m/03tmr": "Ice hockey", "/m/01h7lh": "Mixed martial arts", "/m/0410tth": "Motorsport",
+                        "/m/07bs0": "Tennis", "/m/07_53": "Volleyball", "/m/02jjt": "Entertainment (parent topic)",
+                        "/m/09kqc": "Humor", "/m/02vxn": "Movies", "/m/05qjc": "Performing arts",
+                        "/m/066wd": "Professional wrestling", "/m/0f2f9": "TV shows",
+                        "/m/019_rr": "Lifestyle (parent topic)", "/m/032tl": "Fashion", "/m/027x7n": "Fitness",
+                        "/m/02wbm": "Food", "/m/03glg": "Hobby", "/m/068hy": "Pets",
+                        "/m/041xxh": "Physical attractiveness [Beauty]", "/m/07c1v": "Technology",
+                        "/m/07bxq": "Tourism", "/m/07yv9": "Vehicles", "/m/098wr": "Society (parent topic)",
+                        "/m/09s1f": "Business", "/m/0kt51": "Health", "/m/01h6rj": "Military", "/m/05qt0": "Politics",
+                        "/m/06bvp": "Religion", "/m/01k8wb": "Knowledge", '/g/120yrv6h': 'Tourism'}
             request = api_service.channels().list(
-                part="status,brandingSettings",
+                part="snippet,topicDetails,status",
                 id=channel_url.split('/')[-1]
             )
             response = request.execute()
@@ -259,12 +283,16 @@ class MainApp(tk.Tk):
             if 'items' in response:
                 channel_properties = response['items'][0]
                 made_for_kids = channel_properties.get('status', {}).get('madeForKids', 'No data')
-                description = channel_properties.get('brandingSettings', {}).get('channel', {}).get('description',
-                                                                                                    'No data')
-                return channel_url, made_for_kids, description
+                description = channel_properties.get('snippet', {}).get('description', 'No data')
+                topic = channel_properties.get('topicDetails', {}).get('topicIds', 'No data')
+
+                if topic != 'No data':
+                    topic = ", ".join([topic_id[x] for x in reversed(topic)])
+
+                return channel_url, made_for_kids, description, topic
 
             else:
-                return channel_url, 'No data', 'No data'
+                return channel_url, 'No data', 'No data', 'No data', 'No data'
 
         def get_processed_channels(result_worksheet):
             """Collects all channels URL already processed from Result tab in set"""
@@ -277,6 +305,9 @@ class MainApp(tk.Tk):
 
             return processed_channels
 
+        # Initialize Language Detection
+        l_detector = LanguageDetectorBuilder.from_all_languages().with_preloaded_language_models().build()
+
         # Initialize calculation process time
         start = time.time()
         current_iteration = 0
@@ -287,7 +318,7 @@ class MainApp(tk.Tk):
             result_sheet = self.workbook["Results"]
         else:
             result_sheet = self.workbook.create_sheet(title="Results")
-            result_sheet.append(["Placement", "Placement URL", "madeForKids", "Description"])
+            result_sheet.append(["Placement", "Placement URL", "madeForKids", "Description", "Default Language", "Topic"])
 
         # Set the variable for future and get the channels already processed if any
         processed_channels = get_processed_channels(result_sheet)
@@ -311,8 +342,16 @@ class MainApp(tk.Tk):
 
                 try:
                     # get the properties of channel and append to result worksheet
-                    col2, col3, col4 = get_channel_properties(youtube_api_service, channel_url)
-                    result_sheet.append([channel_name, col2, col3, col4])
+                    col2, col3, col4, col6 = get_channel_properties(youtube_api_service, channel_url)
+
+                    # Langauge detection
+                    if col4 != "" and col4 != "error" and col4 != "No Data" and col4 is not None:
+                        language = l_detector.detect_language_of(col4)
+                        col5 = language.iso_code_639_3.name
+                    else:
+                        col5 = "No Data"
+
+                    result_sheet.append([channel_name, col2, col3, col4, col5, col6])
                     # add channel url to processed channels
                     processed_channels.add(channel_url)
                     print(f"processing {channel_name} - {channel_url}")
@@ -324,7 +363,7 @@ class MainApp(tk.Tk):
                         break  # Exit the loop
 
                     # append channel data to result worksheet with error if exception raised
-                    result_sheet.append([channel_name, channel_url, "error", "error"])
+                    result_sheet.append([channel_name, channel_url, "error", "error", "error", "error"])
                     # add channel url to processed channels
                     processed_channels.add(channel_url)
                     print(f"Error processing {channel_name} - {channel_url}: {str(e)}")
