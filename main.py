@@ -54,7 +54,7 @@ class MainApp(tk.Tk):
         reset the app
     """
     def __init__(self):
-        """Inits MainApp with all the attributes necessary to the logic of the applcation and the gui layout"""
+        """Inits MainApp with all the attributes necessary to the logic of the application and the gui layout"""
         super().__init__()
 
         self.title("YouTube Made For Kid Checker")
