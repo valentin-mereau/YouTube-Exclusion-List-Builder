@@ -1,8 +1,9 @@
 
-# YouTube Made For Kids Checker
+# YouTube Exclusion List Builder
 
 This project aim to help digital marketing professional to improve their Google Ads placements on YouTube campaign. 
-It's always frustrating to see part of campaign budget going to videos with kid content. 
+It's always frustrating to see part of campaign budget going to videos with kid content, undesired topic like music or
+wrong spoken language.
 Unfortunately exclusion list available online are not the most reliable and up to date.
 
 This graphic user interface will help you to build along your campaign custom YouTube channel exclusion list.
@@ -12,15 +13,17 @@ This graphic user interface will help you to build along your campaign custom Yo
 
 **1<sup>st</sup> option - Install YouTube MadeForKids Checker with executable file.**
 
-You can download the application here [YouTube-MadeForKids-Checker.v1.0.zip
+You can download the application here [YouTube-Exclusion-List-Builder.v1.0.zip
 ](https://github.com/seexmax/YouTube-MadeForKids-Checker/releases/tag/v1.0.0) 
-for macOS or Windows. On Mac, you will most probably face an error message while executing the file like 
-" “YouTube-MadeForKids-Checker.v1.0 2” can’t be opened because Apple cannot check it for malicious software.". 
+for macOS or Windows. 
+
+On Mac, you will most probably face an error message while executing the file like 
+" 'YouTube-Exclusion-List-Builder.v1.0' can’t be opened because Apple cannot check it for malicious software.". 
 To avoid this, go in the System Preferences > Security and Privacy and you should see a section where it says 
 that the app was blocked from use. Click on open anyway. Wait a minute and you should see the app open.
 
 
-**2<sup>nd</sup> option - Install YouTube MadeForKids Checker with command line.**
+**2<sup>nd</sup> option - Install YouTube Exclusion List Builder with command line.**
 
 This project requires python 3.10 you can download it [here](https://www.python.org/downloads/release/python-3100/).
 
@@ -80,9 +83,10 @@ again._
 
 **The results in your Excel file.**  
 
-When the process is complete your data will be saved in the `Results` tab. You will see two new columns, `madeForKids` which 
-indicates if the channel is made for kids or not and `Description` which contains the description of the channel. You can now filter 
-with 'TRUE' and build your exclusion list.
+When the process is complete your data will be saved in the `Results` tab. You will see four new columns, `madeForKids` which 
+indicates if the channel is made for kids or not. `Description` which contains the description of the channel. `Default Language`
+which is the main language used on the channel. `Topic` which describe the content type of the channel. You can now filter 
+with any element you want and build your exclusion list.
 
 <img height="50%" alt="Screenshot_7" src="https://github.com/seexmax/YouTube-MadeForKids-Checker/assets/96994915/8a662455-2fbb-4338-ba57-bed666be2ae4" width="50%"/>
 
@@ -91,8 +95,8 @@ to search for keywords such as 'kids' or 'fairytale' and add the matching channe
 
 ## Upcoming updates
 
-* Additional filtering options such as language.
-* Moving the application to a more general exclusion list builder.
+* Additional filtering options such as language. (Already available for the 2<sup>nd</sup> installation option)
+* Moving the application to a more general exclusion list builder. (Done for the 2<sup>nd</sup> installation option)
 
 ## License
 
