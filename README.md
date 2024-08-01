@@ -95,9 +95,10 @@ The `Description` column is also useful when 'No data' appears in `madeForKids`.
 to search for keywords such as 'kids' or 'fairytale' and add the matching channels to your list.
 
 ## Upcoming updates
-
-* Additional filtering options such as language. (Already available for the 2<sup>nd</sup> installation option)
-* Moving the application to a more general exclusion list builder. (Done for the 2<sup>nd</sup> installation option)
+v2.0 [released]
+* Additional filtering options such as language. [done - language and topic now available]
+* Moving the application to a more general exclusion list builder. [done]
+* Standalone executable for v2.0 [macOS done, Windows pending]
 
 ## License
 
