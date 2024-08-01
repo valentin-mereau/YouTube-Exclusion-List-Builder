@@ -13,14 +13,15 @@ This graphic user interface will help you to build along your campaign custom Yo
 
 **1<sup>st</sup> option - Install YouTube Exclusion List Builder with executable file.**
 
-You can download the application here [YouTube-Exclusion-List-Builder.v1.0.zip
-](https://github.com/seexmax/YouTube-Exclusion-List-Builder/releases/tag/v1.0.0) 
+You can download the application here [YouTube-Exclusion-List-Builder
+](https://github.com/seexmax/YouTube-Exclusion-List-Builder/releases) 
 for macOS or Windows. 
 
 On Mac, you will most probably face an error message while executing the file like 
-" 'YouTube-Exclusion-List-Builder.v1.0' can’t be opened because Apple cannot check it for malicious software.". 
+`YouTube-Exclusion-List-Builder can’t be opened because Apple cannot check it for malicious software.`. 
 To avoid this, go in the System Preferences > Security and Privacy and you should see a section where it says 
-that the app was blocked from use. Click on open anyway. Wait a minute and you should see the app open.
+that the app was blocked from use. Click on open anyway. Wait a minute and you should see the app open. 
+Find more info on this topic [here](https://support.apple.com/en-bw/102445#:~:text=If%20you%20want%20to%20open%20an%20app%20that%20hasn%E2%80%99t%20been%20notarized%20or%20is%20from%20an%20unidentified%20developer).
 
 
 **2<sup>nd</sup> option - Install YouTube Exclusion List Builder with command line.**
