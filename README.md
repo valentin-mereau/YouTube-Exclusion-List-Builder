@@ -100,6 +100,9 @@ v2.0 [released]
 * Moving the application to a more general exclusion list builder. [done]
 * Standalone executable for v2.0 [macOS done, Windows pending]
 
+v3.0 [not started]
+* Improve performance by using pandas' db feature to better manage the channels to process.
+
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
