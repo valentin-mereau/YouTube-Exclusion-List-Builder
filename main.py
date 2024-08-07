@@ -27,8 +27,12 @@ class MainApp(tk.Tk):
         define the validity of the user's token
     channel_number : int
         count the number of channel to process on the uploaded file
-    processed_channel : int
+    channel : dict
+        dictionary of extracted data from Excel file in data tab {channel_url:channel_name}
+    processed_channel_number : int
         count the channels already processed
+    processed_channel : dict
+        dictionary of extracted data from Excel file in results tab {channel_url:channel_name}
     workbook : openpyxl.reader.excel
         loaded Excel file
     stop_and_save_state : bool
@@ -73,7 +77,9 @@ class MainApp(tk.Tk):
                                            'yzXMxd0wUfVkuycVZNtXfBidNtzUiydBQwUAkAAEux+AOOo/0gAAAAAElFTkSuQmCC'))
         self.api_key = "empty"
         self.channel_number = 0
-        self.processed_channel = 0
+        self.channel = {}
+        self.processed_channel_number = 0
+        self.processed_channel = {}
         self.workbook = None
         self.stop_and_save_state = False
 
@@ -129,7 +135,7 @@ class MainApp(tk.Tk):
             if self.verify_excel_template():
                 # if the file is valid, display file name and icon
                 self.lbl_file_uploaded.config(text=filepath.split('/')[-1], image=self.icon_image, compound='left')
-                self.lbl_yb_channel_count.config(text=f'{self.channel_number - self.processed_channel} channels')
+                self.lbl_yb_channel_count.config(text=f'{self.channel_number} channels')
                 # activate the process button
                 self.btn_process.config(state=tk.NORMAL)
             else:
@@ -191,33 +197,52 @@ class MainApp(tk.Tk):
                 self.api_key = "invalid"
 
     def verify_excel_template(self):
-        """Verifies if the file uploaded is matching the template and count channels to process inside the file"""
+        """Verifies if the file uploaded is matching the template, count and save channels from the file"""
         # load the file
         self.workbook = openpyxl.load_workbook(self.excel_file_path.get())
 
         # reset attributes for the case when user change the uploaded file
         self.channel_number = 0
-        self.processed_channel = 0
+        self.channel = {}
+        self.processed_channel_number = 0
+        self.processed_channel = {}
 
-        # if a result tab is present, verify header
-        if ["Data", "Results"] == self.workbook.sheetnames and ["Placement", "Placement URL", "madeForKids", "Description"] == [cell.value for cell in self.workbook["Results"][1]]:
-            # get the number of processed channels
-            self.processed_channel = sum(1 for row in self.workbook["Results"].iter_rows(min_row=2, values_only=True) if any(row))
-        # if data tab is present, verify header
-        if "Data" in self.workbook.sheetnames and ["Placement", "Placement URL"] == [cell.value for cell in self.workbook["Data"][1]]:
-            # get the number of channel in the data tab
-            self.channel_number = sum(1 for row in self.workbook["Data"].iter_rows(min_row=2, values_only=True) if any(row))
+        if "Data" in self.workbook.sheetnames and ["Placement", "Placement URL"] == [cell.value for cell in
+                                                                                     self.workbook["Data"][1]]:
+            # get the number of channel to process
+            for row in self.workbook["Data"].iter_rows(min_row=2, values_only=True):
+                self.channel[row[1]] = row[0]
 
-            # return False and display error message box when template is matching but no data to process
+            self.channel_number = len(self.channel)
+
+            # if there is no channel to process rise error
             if not self.channel_number:
                 messagebox.showinfo(title="Message Box", message="Empty file", icon='error')
                 return False
-            elif self.channel_number == self.processed_channel:
-                messagebox.showinfo(title="Message Box", message="Channels already processed", icon='error')
-                return False
+
+            # if there is a result tab, check the header
+            elif "Results" in self.workbook.sheetnames and ["Placement",
+                                                                    "Placement URL",
+                                                                    "madeForKids",
+                                                                    "Description",
+                                                                    "Default Language",
+                                                                    "Topic"] == [cell.value for cell in
+                                                                                 self.workbook["Results"][1]]:
+                # get the number of processed channels
+                for row in self.workbook["Results"].iter_rows(min_row=2, values_only=True):
+                    self.processed_channel[row[1]] = row[0]
+
+                self.processed_channel_number = len(self.processed_channel)
+                # adjust the number of channels to process
+                self.channel_number = len({k: v for k, v in self.channel.items() if k not in self.processed_channel})
+                # if the channels are already processed rise error
+                if not self.channel_number:
+                    messagebox.showinfo(title="Message Box", message="Channels already processed", icon='error')
+                    return False
+
+                return True
 
             return True
-
         else:
             # return False and display error message box when template invalid
             messagebox.showinfo(title="Message Box", message="Template file incorrect", icon='error')
@@ -278,7 +303,7 @@ class MainApp(tk.Tk):
                 id=channel_url.split('/')[-1]
             )
             response = request.execute()
-
+            print(response)
             # Check if the response has items
             if 'items' in response:
                 channel_properties = response['items'][0]
@@ -292,18 +317,7 @@ class MainApp(tk.Tk):
                 return channel_url, made_for_kids, description, topic
 
             else:
-                return channel_url, 'No data', 'No data', 'No data', 'No data'
-
-        def get_processed_channels(result_worksheet):
-            """Collects all channels URL already processed from Result tab in set"""
-            processed_channels = set()
-
-            for row in result_worksheet.iter_rows(min_row=2, max_col=2, values_only=True):
-                channel_url = row[1]
-                if channel_url:
-                    processed_channels.add(channel_url)
-
-            return processed_channels
+                return channel_url, 'No data', 'No data', 'No data'
 
         # Initialize Language Detection
         l_detector = LanguageDetectorBuilder.from_all_languages().with_preloaded_language_models().build()
@@ -321,7 +335,7 @@ class MainApp(tk.Tk):
             result_sheet.append(["Placement", "Placement URL", "madeForKids", "Description", "Default Language", "Topic"])
 
         # Set the variable for future and get the channels already processed if any
-        processed_channels = get_processed_channels(result_sheet)
+        channels_to_process = {k: v for k, v in self.channel.items() if k not in self.processed_channel}
 
         # Initialize YouTube API service
         youtube_api_service = get_youtube_api_service(self.api_entry.get())
@@ -329,46 +343,38 @@ class MainApp(tk.Tk):
         # Set the total steps of the charging bar
         self.charging_bar['maximum'] = self.channel_number
 
-        for row in self.workbook['Data'].iter_rows(min_row=2, max_col=2, values_only=True):
-            # Unpack the name and url from the current row
-            channel_name, channel_url = row
+        for element in channels_to_process:
+            channel_name = channels_to_process[element]
+            channel_url = element
 
             # increment by 1 the charging bar and update the iteration counter
             time.sleep(0.05)
             self.charging_bar["value"] = current_iteration
             current_iteration += 1
 
-            if channel_url and channel_url not in processed_channels:
+            try:
+                # get the properties of channel and append to result worksheet
+                col2, col3, col4, col6 = get_channel_properties(youtube_api_service, channel_url)
 
-                try:
-                    # get the properties of channel and append to result worksheet
-                    col2, col3, col4, col6 = get_channel_properties(youtube_api_service, channel_url)
+                # Langauge detection
+                if col4 not in ["", "error", "No data", None, "\n"]:
+                    language = l_detector.detect_language_of(col4)
+                    col5 = language.iso_code_639_3.name
+                else:
+                    col5 = "No Data"
 
-                    # Langauge detection
-                    if col4 != "" and col4 != "error" and col4 != "No Data" and col4 is not None:
-                        language = l_detector.detect_language_of(col4)
-                        col5 = language.iso_code_639_3.name
-                    else:
-                        col5 = "No Data"
+                result_sheet.append([channel_name, col2, col3, col4, col5, col6])
+                print(f"processing {channel_name} - {channel_url}")
 
-                    result_sheet.append([channel_name, col2, col3, col4, col5, col6])
-                    # add channel url to processed channels
-                    processed_channels.add(channel_url)
-                    print(f"processing {channel_name} - {channel_url}")
+            except Exception as e:
+                # Handle quota exceeded error
+                if "quotaExceeded" in str(e):
+                    messagebox.showinfo(title="Message Box", message="Quota exceeded: Result saved in your file", icon='info')
+                    break  # Exit the loop
 
-                except Exception as e:
-                    # Handle quota exceeded error
-                    if "quotaExceeded" in str(e):
-                        messagebox.showinfo(title="Message Box", message="Quota exceeded: Result saved in your file", icon='info')
-                        break  # Exit the loop
-
-                    # append channel data to result worksheet with error if exception raised
-                    result_sheet.append([channel_name, channel_url, "error", "error", "error", "error"])
-                    # add channel url to processed channels
-                    processed_channels.add(channel_url)
-                    print(f"Error processing {channel_name} - {channel_url}: {str(e)}")
-            else:
-                print(f"Already processed {channel_name} - {channel_url}")
+                # append channel data to result worksheet with error if exception raised
+                result_sheet.append([channel_name, channel_url, "error", "error", "error", "error"])
+                print(f"Error processing {channel_name} - {channel_url}: {str(e)}")
 
             if self.stop_and_save_state:
                 # check state of attribute, if user click the button, exit the loop
@@ -397,7 +403,7 @@ class MainApp(tk.Tk):
         self.lbl_yb_channel_count.config(text="")
         self.btn_process.config(text=f"Process channels", command=self.process_channels, state=tk.DISABLED)
         self.channel_number = 0
-        self.processed_channel = 0
+        self.processed_channel_number = 0
         self.workbook = None
         self.stop_and_save_state = False
         self.lbl_file_uploaded.config(text="No file uploaded", image="", anchor=tk.CENTER)
