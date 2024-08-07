@@ -102,8 +102,8 @@ v2.0 [released]
 * Standalone executable for v2.0 [macOS done, Windows pending]
 
 v2.1 [working in progress]
-* Improve performance by using pandas' db feature to better manage the channels to process. [done - pandas appear to be 
-heavy for the standalone executable. optimization have been done with an other approach]
+* Improve performance by using pandas' db feature to better manage the channels to process. [done - pandas appears to be 
+heavy for the standalone executable. optimization have been done with another approach]
 
 ## License
 
