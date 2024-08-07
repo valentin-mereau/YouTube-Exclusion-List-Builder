@@ -84,10 +84,11 @@ again._
 
 **The results in your Excel file.**  
 
-When the process is complete your data will be saved in the `Results` tab. You will see four new columns, `madeForKids` which 
-indicates if the channel is made for kids or not. `Description` which contains the description of the channel. `Default Language`
-which is the main language used on the channel. `Topic` which describe the content type of the channel. You can now filter 
-with any element you want and build your exclusion list.
+When the process is complete your data will be saved in the `Results` tab. Note that the number of channels in your `Data` 
+tab and in the `Results` tab may be different. The application will automatically remove duplicate rows. You will see four 
+new columns, `madeForKids` which indicates if the channel is made for kids or not. `Description` which contains the 
+description of the channel. `Default Language`which is the main language used on the channel. `Topic` which describe the 
+content type of the channel. You can now filter with any element you want and build your exclusion list.
 
 <img height="50%" alt="Screenshot_7" src="https://github.com/seexmax/YouTube-MadeForKids-Checker/assets/96994915/8a662455-2fbb-4338-ba57-bed666be2ae4" width="50%"/>
 
@@ -100,8 +101,9 @@ v2.0 [released]
 * Moving the application to a more general exclusion list builder. [done]
 * Standalone executable for v2.0 [macOS done, Windows pending]
 
-v3.0 [not started]
-* Improve performance by using pandas' db feature to better manage the channels to process.
+v2.1 [working in progress]
+* Improve performance by using pandas' db feature to better manage the channels to process. [done - pandas appear to be 
+heavy for the standalone executable. optimization have been done with an other approach]
 
 ## License
 
