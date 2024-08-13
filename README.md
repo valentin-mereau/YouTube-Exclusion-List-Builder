@@ -90,7 +90,7 @@ new columns, `madeForKids` which indicates if the channel is made for kids or no
 description of the channel. `Default Language`which is the main language used on the channel. `Topic` which describe the 
 content type of the channel. You can now filter with any element you want and build your exclusion list.
 
-<img height="50%" alt="Screenshot_7" src="https://github.com/seexmax/YouTube-MadeForKids-Checker/assets/96994915/8a662455-2fbb-4338-ba57-bed666be2ae4" width="50%"/>
+<img height="50%" alt="Screenshot_8" src="https://github.com/user-attachments/assets/95b13807-22df-41db-89d5-403ec23e1c94" width="50%"/>
 
 The `Description` column is also useful when 'No data' appears in `madeForKids`. You can use the _Find & Replace_ Excel tool 
 to search for keywords such as 'kids' or 'fairytale' and add the matching channels to your list.
