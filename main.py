@@ -297,13 +297,15 @@ class MainApp(tk.Tk):
                         "/m/041xxh": "Physical attractiveness [Beauty]", "/m/07c1v": "Technology",
                         "/m/07bxq": "Tourism", "/m/07yv9": "Vehicles", "/m/098wr": "Society (parent topic)",
                         "/m/09s1f": "Business", "/m/0kt51": "Health", "/m/01h6rj": "Military", "/m/05qt0": "Politics",
-                        "/m/06bvp": "Religion", "/m/01k8wb": "Knowledge", '/g/120yrv6h': 'Tourism'}
+                        "/m/06bvp": "Religion", "/m/01k8wb": "Knowledge", '/g/120yrv6h': 'Tourism',
+                        "/g/120y8l81": "Enterprise"}
+
             request = api_service.channels().list(
                 part="snippet,topicDetails,status",
                 id=channel_url.split('/')[-1]
             )
             response = request.execute()
-            print(response)
+
             # Check if the response has items
             if 'items' in response:
                 channel_properties = response['items'][0]
@@ -357,9 +359,17 @@ class MainApp(tk.Tk):
                 col2, col3, col4, col6 = get_channel_properties(youtube_api_service, channel_url)
 
                 # Langauge detection
-                if col4 not in ["", "error", "No data", None, "\n"]:
+                if col4 not in ["error", "No data"]:
                     language = l_detector.detect_language_of(col4)
-                    col5 = language.iso_code_639_3.name
+                    if language:
+                        col5 = language.iso_code_639_3.name
+                    else:
+                        language = l_detector.detect_language_of(channel_name)
+                        if language:
+                            col5 = f'low_{language.iso_code_639_3.name}'
+                        else:
+                            col5 = "No Data"
+
                 else:
                     col5 = "No Data"
 
