@@ -14,7 +14,7 @@ This graphic user interface will help you to build along your campaign custom Yo
 **1<sup>st</sup> option - Install YouTube Exclusion List Builder with executable file.**
 
 You can download the application here [YouTube-Exclusion-List-Builder
-](https://github.com/seexmax/YouTube-Exclusion-List-Builder/releases) 
+](https://github.com/valentin-mereau/YouTube-Exclusion-List-Builder/releases) 
 for macOS or Windows. 
 
 On Mac, you will most probably face an error message while executing the file like 
@@ -29,7 +29,7 @@ Find more info on this topic [here](https://support.apple.com/en-bw/102445#:~:te
 This project requires python 3.10 you can download it [here](https://www.python.org/downloads/release/python-3100/).
 
 ```bash
-git clone https://github.com/seexmax/YouTube-Exclusion-List-Builder.git
+git clone https://github.com/valentin-mereau/YouTube-Exclusion-List-Builder.git
 ```
 Open the project directory with `cd` and install the requirements. 
 ```bash
@@ -101,9 +101,14 @@ v2.0 [released]
 * Moving the application to a more general exclusion list builder. [done]
 * Standalone executable for v2.0 [macOS done, Windows pending]
 
-v2.1 [working in progress]
-* Improve performance by using pandas' db feature to better manage the channels to process. [done - pandas appears to be 
-heavy for the standalone executable. optimization have been done with another approach]
+v2.1 [released]
+* Improve performance ~~by using pandas' db feature~~ to better manage the channels to process. [done]
+* Standalone executable for v2.1 [macOS done, Windows pending]
+
+v2.2 [released]
+* Fix error output for some channels with empty description or unknown category [done]
+* New feature to detect language for channels without description based on their name. Output with low confidence. 
+* Standalone executable for v2.2 [macOS done, Windows pending]
 
 ## License
 
