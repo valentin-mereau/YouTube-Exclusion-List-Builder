@@ -8,3 +8,7 @@ show_downloads: true
 github:
   macOS: https://github.com/seexmax/YouTube-MadeForKids-Checker/releases/download/v1.0.0/YouTube-MadeForKids-Checker.v1.0.macOS.zip
   Windows: https://github.com/seexmax/YouTube-MadeForKids-Checker/releases/download/v1.0.0/YouTube-MadeForKids-Checker.v1.0.Win.zip
+readme_index:
+  enabled:          true
+  remove_originals: false
+  with_frontmatter: false
